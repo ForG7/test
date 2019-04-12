@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="Author: ZhaoShuai QQ & WeChat:1812532016">
+    <title></title>
+    <style>
+        #box1,
+        #box2 {
+            width: 300px;
+            height: 300px;
+            border: #000 1px solid;
+            margin: 50px auto;
+        }
+
+        #box1 p,
+        #box2 p {
+            width: 300px;
+            height: 29px;
+            margin: 0;
+            border-bottom: #000 1px solid;
+        }
+
+        #box1 p span,
+        #box2 p span {
+            display: block;
+            float: left;
+            width: 100px;
+            height: 29px;
+            line-height: 29px;
+            text-align: center;
+        }
+
+        #box1 p span.on,
+        #box2 p span.on {
+            background: #c00;
+            color: #fff;
+        }
+
+        #box1 div,
+        #box2 div {
+            width: 300px;
+            height: 270px;
+            line-height: 270px;
+            text-align: center;
+            display: none;
+        }
+
+        #box1 div.show,
+        #box2 div.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div id="box1">
+    <p><span class="on">Menu 1</span><span>Menu 2</span><span>Menu 2</span></p>
+    <div class="show">Content 1</div>
+    <div>Content 2</div>
+    <div>Content 3</div>
+</div>
+<div id="box2">
+    <p><span class="on">Menu 1</span><span>Menu 2</span><span>Menu 2</span></p>
+    <div class="show">Content 1</div>
+    <div>Content 2</div>
+    <div>Content 3</div>
+</div>
+<script>
+  function Tab(id) {
+    if (!id) return;
+    this.oBox = document.getElementById(id);
+    this.aBtn = this.oBox.getElementsByTagName('p')[0].getElementsByTagName('span');
+    this.aDiv = this.oBox.getElementsByTagName('div');
+    this.init();
+  }
+
+  Tab.prototype.init = function () {
+    var _this = this;
+    for (var i = 0; i < this.aBtn.length; i++) {
+      this.aBtn[i].index = i;
+      this.aBtn[i].onclick = function () {
+        _this.fnClick(this);
+      }
+    }
+  };
+
+  Tab.prototype.fnClick = function (arg) {
+    for (var i = 0; i < this.aBtn.length; i++) {
+      this.aBtn[i].className = '';
+      this.aDiv[i].className = '';
+    }
+    arg.className = 'on';
+    this.aDiv[arg.index].className = 'show';
+  };
+
+  function TabPlay(id) {
+    Tab.call(this, id);
+    this.iNow = 0;
+    var _this = this;
+    this.timer = null;
+
+    this.timer = setInterval(function () {
+      _this.Next();
+    }, 1000);
+
+    this.oBox.onmouseover = function () {
+      clearInterval(_this.timer);
+    };
+
+    this.oBox.onmouseout = function () {
+      _this.timer = setInterval(function () {
+        _this.Next();
+      }, 1000);
+    }
+  }
+
+  TabPlay.prototype = new Tab();
+  TabPlay.prototype.constructor = TabPlay;
+
+  TabPlay.prototype.Next = function () {
+    this.iNow++;
+    if (this.iNow >= this.aBtn.length) this.iNow = 0;
+    this.fnClick(this.aBtn[this.iNow]);
+  };
+
+  new Tab('box1');
+  new TabPlay('box2');
+</script>
+</body>
+</html>
